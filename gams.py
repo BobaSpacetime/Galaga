@@ -5,10 +5,25 @@ WIDTH = 650
 
 galaga = Actor("galaga")
 galaga.pos = (325,400)
+bugs = []
+x = 80
+y = 50
+for o in range(3):
+    for i in range(4):
+        bug = Actor("bug")
+        bug.pos = (x,y)
+        bugs.append(bug)
+        x += 50
+    x -= 200
+    y += 40
 bullets = []
+score = 0
 def draw():
     screen.fill("#001787")
     galaga.draw()
+    for bug in bugs:
+        bug.draw()
+    screen.draw.text("Score: " + str(score), (10,10), color="white")
     for bullet in bullets:
         bullet.draw()
 
