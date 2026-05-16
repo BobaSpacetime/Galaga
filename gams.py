@@ -1,4 +1,5 @@
 import pgzrun
+import time
 
 HEIGHT = 450
 WIDTH = 650
@@ -6,10 +7,14 @@ WIDTH = 650
 galaga = Actor("galaga")
 galaga.pos = (325,400)
 bugs = []
+bulletstr = []
+bugstr = []
 x = 80
 y = 50
+cooldown = 200
+lastshot = 0
 direction = 1
-for o in range(3):
+for o in range(4):
     for i in range(4):
         bug = Actor("bug")
         bug.pos = (x,y)
@@ -29,7 +34,7 @@ def draw():
         bullet.draw()
 
 def update():
-    global direction
+    global direction, score 
     if keyboard.left: 
         galaga.x-=10
         if galaga.x<50:
@@ -42,22 +47,35 @@ def update():
         bullet.y -= 5
         if bullet.y < 0: 
             bullets.remove(bullet)
+        for bug in bugs:
+            if bullet.colliderect(bug):
+                bulletstr.append(bullet)
+                bugstr.append(bug)
+                score += 1
+    for bullet in bulletstr:
+        if bullet in bullets:
+            bullets.remove(bullet)
+    for bug in bugstr:
+        if bug in bugs: 
+            bugs.remove(bug)
     for bug in bugs:
-        bug.x += 1*direction
-        if bugs[-1].x > 650:
+        bug.x += 1 * direction
+        if bugs[-1].x > 625:
             direction = -1
-        if bugs[0].x < 0:
+            for bug in bugs:
+                bug.y += 2.5 
+        if bugs[0].x < 25:
             direction = 1
-
-
-        
-    
+            for bug in bugs:
+                bug.y += 2.5
 
 def on_key_down(key):
+    global lastshot
+    currentime = time.time()
     if key == keys.SPACE:
-        bullet = Actor("bullet")
-        bullet.pos = (galaga.x, galaga.y)
-        bullets.append(bullet)
-
+        if currentime - lastshot > cooldown:
+            bullet = Actor("bullet")
+            bullet.pos = (galaga.x, galaga.y)
+            bullets.append(bullet)
 
 pgzrun.go()
