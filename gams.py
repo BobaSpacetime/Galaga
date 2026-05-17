@@ -11,9 +11,10 @@ bulletstr = []
 bugstr = []
 x = 80
 y = 50
-cooldown = 200
+cooldown = 1
 lastshot = 0
 direction = 1
+gameover = False
 for o in range(4):
     for i in range(4):
         bug = Actor("bug")
@@ -32,9 +33,12 @@ def draw():
     screen.draw.text("Score: " + str(score), (10,10), color="white")
     for bullet in bullets:
         bullet.draw()
+    if gameover == True:
+        screen.fill("#FFEC5D")
+        screen.draw.text("YOU WIN", (225,325), color="white", fontsize = 100)
 
 def update():
-    global direction, score 
+    global direction, score, gameover
     if keyboard.left: 
         galaga.x-=10
         if galaga.x<50:
@@ -68,6 +72,8 @@ def update():
             direction = 1
             for bug in bugs:
                 bug.y += 2.5
+    if score == 16:
+        gameover = True
 
 def on_key_down(key):
     global lastshot
@@ -77,5 +83,6 @@ def on_key_down(key):
             bullet = Actor("bullet")
             bullet.pos = (galaga.x, galaga.y)
             bullets.append(bullet)
+            lastshot = currentime
 
 pgzrun.go()
